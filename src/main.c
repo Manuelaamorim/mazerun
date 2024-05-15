@@ -1,88 +1,81 @@
-/**
- * main.h
- * Created on Aug, 23th 2023
- * Author: Tiago Barros
- * Based on "From C to C++ course - 2002"
-*/
-
+#include <stdio.h>
 #include <string.h>
-
+#include <stdlib.h>
 #include "screen.h"
 #include "keyboard.h"
 #include "timer.h"
 
-int x = 34, y = 12;
-int incX = 1, incY = 1;
+void free_maze(int linhas, char **maze) {
 
-void printHello(int nextX, int nextY)
-{
-    screenSetColor(CYAN, DARKGRAY);
-    screenGotoxy(x, y);
-    printf("           ");
-    x = nextX;
-    y = nextY;
-    screenGotoxy(x, y);
-    printf("Hello World");
+    for (int i = 0; i < linhas; i++)
+    {
+        free(maze[i]);
+    }
+
+    free(maze);   
 }
 
-void printKey(int ch)
-{
-    screenSetColor(YELLOW, DARKGRAY);
-    screenGotoxy(35, 22);
-    printf("Key code :");
+void read_maze(int *linhas, int *colunas, char ***maze) {
 
-    screenGotoxy(34, 23);
-    printf("            ");
-    
-    if (ch == 27) screenGotoxy(36, 23);
-    else screenGotoxy(39, 23);
-
-    printf("%d ", ch);
-    while (keyhit())
+    char tmp[13];
+    FILE *f = fopen("txt/map.txt", "r");
+    if (f == NULL)
     {
-        printf("%d ", readch());
+        printf("Erro ao ler o labirinto.");
+        exit(1);
+    }
+
+    fscanf(f, "%d %d ", linhas, colunas);
+    *maze = (char **)calloc(*linhas, sizeof(char *));  
+    for (int i = 0; i < *linhas; i++)
+    {
+        (*maze)[i] = (char *)calloc(*colunas + 1, sizeof(char));
+    
+        fgets(tmp, 13, f);
+        if (tmp[strlen(tmp) - 1] == '\n')
+        {
+            tmp[strlen(tmp) - 1] = 0;
+        }
+
+        strcpy((*maze)[i], tmp);
+    }
+
+    fclose(f);   
+}
+
+void draw_maze(int linhas, int colunas, char **maze) {
+    int scale_x = 7;  
+    int scale_y = 3;
+
+    int startX = MINX + 1;
+    int startY = MINY + 1;
+
+    for (int y = 0; y < linhas; y++) {
+        for (int sy = 0; sy < scale_y; sy++) { 
+            for (int x = 0; x < colunas; x++) {
+                for (int sx = 0; sx < scale_x; sx++) {  
+                    screenGotoxy(startX + x * scale_x + sx, startY + y * scale_y + sy);
+                    if ((maze)[y][x] == '1')
+                    {
+                        printf("%c", '|');
+                    }
+                    else {
+
+                        printf(" ");
+                    }
+                    
+                }
+            }
+        }
     }
 }
 
 int main() 
 {
-    static int ch = 0;
-
-    screenInit(1);
-    keyboardInit();
-    timerInit(50);
-
-    printHello(x, y);
-    screenUpdate();
-
-    while (ch != 10) //enter
-    {
-        // Handle user input
-        if (keyhit()) 
-        {
-            ch = readch();
-            printKey(ch);
-            screenUpdate();
-        }
-
-        // Update game state (move elements, verify collision, etc)
-        if (timerTimeOver() == 1)
-        {
-            int newX = x + incX;
-            if (newX >= (MAXX -strlen("Hello World") -1) || newX <= MINX+1) incX = -incX;
-            int newY = y + incY;
-            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
-
-            printKey(ch);
-            printHello(newX, newY);
-
-            screenUpdate();
-        }
-    }
-
-    keyboardDestroy();
-    screenDestroy();
-    timerDestroy();
-
-    return 0;
+    int linhas;
+    int colunas;
+    char **maze;
+    screenHideCursor();
+    read_maze(&linhas, &colunas, &maze);
+    draw_maze(linhas, colunas, maze);
 }
