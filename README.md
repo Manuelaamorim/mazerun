@@ -5,25 +5,6 @@
   />
 </p>
 
-<p align="center">
-  <img
-    src="https://img.shields.io/github/repo-size/Sofia-Saraiva/Semester3-CESAR-School?style=flat"
-    alt="Repository Size"
-  />
-  <img
-    src="https://img.shields.io/github/languages/count/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=python"
-    alt="Language Count"
-  />
-  <img
-    src="https://img.shields.io/github/commit-activity/t/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=github"
-    alt="Commit Activity"
-  />
-  <a href="LICENSE.md"
-    ><img
-      src="https://img.shields.io/github/license/Sofia-Saraiva/Semester3-CESAR-School"
-      alt="License"
-  /></a>
-</p>
 
 ## 🖥️ Mazerun
 
