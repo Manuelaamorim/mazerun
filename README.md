@@ -1,8 +1,34 @@
 <h1 align="center"> Mazerun </h1>
 
 <p align="center">
-<img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
+  <img
+    src="https://img.shields.io/badge/Status-Em%20desenvolvimento-green?style=flat-square"
+    alt="Status"
+  />
 </p>
+
+<p align="center">
+  <img
+    src="https://img.shields.io/github/repo-size/Sofia-Saraiva/Semester3-CESAR-School?style=flat"
+    alt="Repository Size"
+  />
+  <img
+    src="https://img.shields.io/github/languages/count/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=python"
+    alt="Language Count"
+  />
+  <img
+    src="https://img.shields.io/github/commit-activity/t/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=github"
+    alt="Commit Activity"
+  />
+  <a href="LICENSE.md"
+    ><img
+      src="https://img.shields.io/github/license/Sofia-Saraiva/Semester3-CESAR-School"
+      alt="License"
+  /></a>
+</p>
+
+## 🖥️ XYZ
+
 
 <h3>O que é o "Mazerun"?</h3>
 
