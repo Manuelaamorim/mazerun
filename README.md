@@ -19,6 +19,7 @@
 
 ## 🕹️ Como Jogar
 
+<p>a definir</p>
 
 ## 👩‍💻 Membros
 
