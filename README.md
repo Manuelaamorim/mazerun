@@ -1,5 +1,3 @@
-<h1 align="center"> Mazerun </h1>
-
 <p align="center">
   <img
     src="https://img.shields.io/badge/Status-Em%20desenvolvimento-green?style=flat-square"
@@ -27,7 +25,7 @@
   /></a>
 </p>
 
-## 🖥️ XYZ
+## 🖥️ Mazerun
 
 
 <h3>O que é o "Mazerun"?</h3>
