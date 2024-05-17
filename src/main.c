@@ -39,7 +39,7 @@ void read_maze(int *linhas, int *colunas, char ***maze) {
 
         strcpy((*maze)[i], tmp);
     }
-
+    
     fclose(f);   
 }
 
