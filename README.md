@@ -58,7 +58,7 @@
     </td>
     <td align="center">
       <a href="https://github.com/MatheusVelame">
-        <img src="https://avatars.githubusercontent.com/MatheusVelame" width="100px;" alt="Foto de Sofia"/><br>
+        <img src="https://avatars.githubusercontent.com/MatheusVelame" width="100px;" alt="Foto de Matheus"/><br>
         <sub>
           <b>Matheus V. Pessoa</b>
         </sub>
