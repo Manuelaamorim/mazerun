@@ -36,7 +36,7 @@ void aloca_labirinto(char ***labirinto) {
 
     for (int i = 0; i < linha; i++)
     {
-        (*labirinto)[i] = (char *)calloc((coluna + 1), sizeof(char));
+        (*labirinto)[i] = (int *)calloc((coluna + 1), sizeof(int));
     }
 }
 

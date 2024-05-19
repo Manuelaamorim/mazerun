@@ -1,0 +1,4 @@
+C:\Windows\System32\wsl.exe --distribution Ubuntu --exec /mnt/c/Users/mathe/AppData/Local/Programs/CLion/bin/ttyfix /bin/bash -c "export CLION_IDE=TRUE && export CMAKE_COLOR_DIAGNOSTICS=ON && export JETBRAINS_IDE=TRUE && cd /mnt/c/Users/mathe/CLionProjects/mazerun/cmake-build-debug-wsl && /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G 'CodeBlocks - Unix Makefiles' -S /mnt/c/Users/mathe/CLionProjects/mazerun -B /mnt/c/Users/mathe/CLionProjects/mazerun/cmake-build-debug-wsl"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/c/Users/mathe/CLionProjects/mazerun/cmake-build-debug-wsl
