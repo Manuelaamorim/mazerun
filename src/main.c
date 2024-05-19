@@ -1,81 +1,105 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include "screen.h"
-#include "keyboard.h"
-#include "timer.h"
 
-void free_maze(int linhas, char **maze) {
+// Define o tamanho do labirinto
+#define coluna 20
+#define linha 20
 
-    for (int i = 0; i < linhas; i++)
+// Define o labirinto como uma matriz de caracteres
+char labirinto_inicial[linha][coluna + 1] = {
+    "1E111111111111111111",
+    "1  111111          1",
+    "11 11   11 1111 11 1",
+    "11    1    1     1 1",
+    "1111111111 1 11  1 1",
+    "1   1   11 1 11    1",
+    "11  1 1 11      11 1",
+    "1     1 11111 1 1 11",
+    "1 11 11       1  1 1",
+    "1  1 11111111111   1",
+    "11 1 11   11    11 1",
+    "1  1 11 1    11  1 1",
+    "1  1    1111 111 111",
+    "11   1111    111 111",
+    "11 1     1111    111",
+    "1   111  1    111111",
+    "1 1   1 1  11 111111",
+    "1   1 1 1 1        1",
+    "111111111S1111111111"
+};
+
+//aloca dinamicamente o labirinto
+void aloca_labirinto(char ***labirinto) {
+
+    *labirinto = (char **)calloc(linha, sizeof(char *));
+
+    for (int i = 0; i < linha; i++)
     {
-        free(maze[i]);
+        (*labirinto)[i] = (char *)calloc((coluna + 1), sizeof(char));
     }
-
-    free(maze);   
 }
 
-void read_maze(int *linhas, int *colunas, char ***maze) {
+void preenche_labirinto(char **labirinto) {
 
-    char tmp[13];
-    FILE *f = fopen("txt/map.txt", "r");
-    if (f == NULL)
+    for (int i = 0; i < linha; i++)
     {
-        printf("Erro ao ler o labirinto.");
-        exit(1);
-    }
-
-    fscanf(f, "%d %d ", linhas, colunas);
-    *maze = (char **)calloc(*linhas, sizeof(char *));  
-    for (int i = 0; i < *linhas; i++)
-    {
-        (*maze)[i] = (char *)calloc(*colunas + 1, sizeof(char));
-    
-        fgets(tmp, 13, f);
-        if (tmp[strlen(tmp) - 1] == '\n')
+        for (int j = 0; j < coluna + 1; j++)
         {
-            tmp[strlen(tmp) - 1] = 0;
+            labirinto[i][j] = labirinto_inicial[i][j];
         }
-
-        strcpy((*maze)[i], tmp);
-    }
-    
-    fclose(f);   
+    }   
 }
-
-void draw_maze(int linhas, int colunas, char **maze) {
-    int scale_x = 7;  
-    int scale_y = 3;
-
-    int startX = MINX + 1;
-    int startY = MINY + 1;
-
-    for (int y = 0; y < linhas; y++) {
-        for (int sy = 0; sy < scale_y; sy++) { 
-            for (int x = 0; x < colunas; x++) {
-                for (int sx = 0; sx < scale_x; sx++) {  
-                    screenGotoxy(startX + x * scale_x + sx, startY + y * scale_y + sy);
-                    if ((maze)[y][x] == '1')
-                    {
-                        printf("%c", '|');
-                    }
-                    else {
-
-                        printf(" ");
-                    }
-                    
-                }
-            }
-        }
-    }
-}
-
-int main() 
+// Função para desenhar o labirinto na tela
+void desenhaLabirinto(char **labirinto)
 {
-    int linhas;
-    int colunas;
-    char **maze;
-    screenHideCursor();
-    read_maze(&linhas, &colunas, &maze);
-    draw_maze(linhas, colunas, maze);
+    int offsetX = (MAXX - coluna) / 2;
+    int offsetY = (MAXY - linha) / 2;
+
+    for (int y = 0; y < linha; y++)
+    {
+        screenGotoxy(offsetX + 1, offsetY + y + 1); // Define a posição do cursor com o deslocamento calculado
+        for (int x = 0; x < coluna; x++)
+        {
+            char ch = labirinto[y][x];
+            if (ch == '1')
+            {
+                screenSetColor(WHITE, BLACK); // Paredes em branco
+            }
+            else if (ch == 'E')
+            {
+                screenSetColor(GREEN, BLACK); // Jogador em verde
+            }
+            else if (ch == 'S')
+            {
+                screenSetColor(RED, BLACK);   // Saída em vermelho
+            }
+            else
+            {
+                screenSetColor(WHITE, BLACK); // Caminhos em branco
+            }
+            printf("%c", ch); // Imprime o caractere
+        }
+    }
+    screenUpdate(); // Atualiza a tela para refletir as mudanças
+}
+
+int main()
+{
+    char **labirinto;
+    // Inicializa a tela e desenha as bordas
+    screenInit(1);
+    aloca_labirinto(&labirinto);
+    preenche_labirinto(labirinto);
+
+    // Desenha o labirinto na tela
+    desenhaLabirinto(labirinto);
+
+    // Aguarda o usuário pressionar Enter para finalizar
+    getchar();
+
+    // Finaliza a tela
+    screenDestroy();
+
+    return 0;
 }
