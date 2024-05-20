@@ -8,12 +8,12 @@
 #ifndef __KEYBOARD_H__
 #define __KEYBOARD_H__
 
-void keyboardInit();
+void keyboardInit(); // Inicializa as configurações do teclado
 
-void keyboardDestroy();
+void keyboardDestroy(); // Restaura as configurações iniciais do teclado
     
-int keyhit();
+int keyhit(); // Verifica se alguma tecla foi pressionada
 
-int readch();
+int readch(); // Lê a tecla pressionada
 
 #endif /* __KEYBOARD_H__ */
