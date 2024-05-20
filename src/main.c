@@ -10,13 +10,42 @@
 int personagem_x = 1; // Posição inicial do personagem
 int personagem_y = 0; // Posição inicial do personagem
 
+void TelaInicio()
+{
+
+    screenClear();  // Limpando a tela para garantir que não há texto residual
+
+    int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+    int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
+
+    char ch;
+
+
+    screenGotoxy(offsetX, offsetY ); // Move o caracter para a posição calculada
+    printf("* Bem-vindo ao MazeRun *");
+
+    screenGotoxy(offsetX, offsetY + 1); // Move o caracter para a posição calculada
+    printf("* Pressione 'c' para começar *");
+
+
+    screenUpdate();  // Atualizando a tela para refletir as mudanças
+
+    while (ch!='c')
+    {
+        ch = readch();  // Esperando o jogador digitar 'c' para começar o game
+    }
+
+}
 
 void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto na tela
+
+    screenClear();  // Limpando a tela para garantir que não há texto residual
+
     int offsetX = (MAXX - COLUNA) / 2;
     int offsetY = (MAXY - LINHA) / 2;
 
     for (int y = 0; y < LINHA; y++) {
-        screenGotoxy(offsetX + 1, offsetY + y + 1); // Define a posição do cursor com o deslocamento calculado
+        screenGotoxy(offsetX + 1, offsetY + y + 1); // Move o caracter para a posição calculada
         for (int x = 0; x < COLUNA; x++) {
             char ch = labirinto[y][x];
             if (ch == '1') {
@@ -42,11 +71,11 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
         labirinto[personagem_y][personagem_x] = 'E'; // Coloca o personagem na nova posição
     }
 
-    else if (labirinto[y][x] == 'S') { // se a posição desejada for 'S', o jogo acaba
+    else if (labirinto[y][x] == '1') { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de voce perdeu
         *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
     }
 
-    else if (labirinto[y][x] == '1') { // se a posição desejada for '1', o jogo acaba
+    else if (labirinto[y][x] == 'S') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de voce ganhou
         *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
     }
 }
@@ -89,7 +118,13 @@ int main() {
     }
 
     keyboardInit(); // Inicializa o teclado
+
     screenInit(1); // Inicializa a tela e desenha as bordas
+
+    TelaInicio(); // Mostra a tela de início
+
+    screenClear(); // Limpa a tela antes de desenhar o labirinto
+
     DesenhaLabirinto(labirinto); // Desenha o labirinto na tela
 
     while (correr) {
