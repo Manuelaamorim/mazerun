@@ -72,12 +72,39 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
     }
 
     else if (labirinto[y][x] == '1') { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de voce perdeu
-        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
+        *correr=2; // Altera o valor principal, pois foi chamada em um ponteiro
     }
 
     else if (labirinto[y][x] == 'S') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de voce ganhou
         *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
     }
+}
+
+void TelaPerder()
+{
+
+    screenClear();  // Limpando a tela para garantir que não há texto residual
+
+    int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+    int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
+
+    char ch;
+
+
+    screenGotoxy(offsetX, offsetY ); // Move o caracter para a posição calculada
+    printf("* Você perdeu! *");
+
+    screenGotoxy(offsetX, offsetY + 1); // Move o caracter para a posição calculada
+    printf("* Pressione 'r' para recomeçar *");
+
+
+    screenUpdate();  // Atualizando a tela para refletir as mudanças
+
+    while (ch!='r')
+    {
+        ch = readch();  // Esperando o jogador digitar 'c' para começar o game
+    }
+
 }
 
 int main() {
@@ -97,8 +124,8 @@ int main() {
         "11 11   11 1111 11 1",
         "11    1    1     1 1",
         "1111111111 1 11  1 1",
-        "1   1   11 1 11    1",
-        "11  1 1 11      11 1",
+        "1   1   11 1111    1",
+        "11  1 1 11  1   11 1",
         "1     1 11111 1 1 11",
         "1 11 11       1  1 1",
         "1  1 11111111111   1",
@@ -127,8 +154,10 @@ int main() {
 
     DesenhaLabirinto(labirinto); // Desenha o labirinto na tela
 
-    while (correr) {
-        if (keyhit()) { // Verifica se alguma tecla foi pressionada
+    while (correr) { // Criei um while true que pode virar false
+        if (keyhit())
+        {
+            // Verifica se alguma tecla foi pressionada
             char ch = readch(); // Lê a tecla que foi pressionada
 
             while (1)
@@ -137,7 +166,7 @@ int main() {
                 if (ch=='w')
                 {
 
-                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr);
+                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr); // Modifica as coordenadas do personagem
                     break;
 
                 }
@@ -145,7 +174,7 @@ int main() {
                 else if (ch=='s')
                 {
 
-                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr);
+                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr); // Modifica as coordenadas do personagem
                     break;
 
                 }
@@ -153,7 +182,7 @@ int main() {
                 else if (ch=='a')
                 {
 
-                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr);
+                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr); // Modifica as coordenadas do personagem
                     break;
 
                 }
@@ -161,7 +190,7 @@ int main() {
                 else if (ch=='d')
                 {
 
-                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr);
+                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr); // Modifica as coordenadas do personagem
                     break;
 
                 }
@@ -182,6 +211,19 @@ int main() {
             DesenhaLabirinto(labirinto); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
         }
 
+
+    }
+
+    if (correr==2)
+    {
+        char ch = readch(); // Lê a tecla que foi pressionada
+
+        if (ch=='r')
+        {
+            correr=0;
+        }
+
+        TelaPerder();
 
     }
 
