@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "screen.h"
 #include "keyboard.h"
 
@@ -9,17 +10,16 @@
 
 int personagem_x = 1; // Posição inicial do personagem
 int personagem_y = 0; // Posição inicial do personagem
+int chaves_cont = 0; // Número de chaves coletadas
 
 void TelaInicio()
 {
-
     screenClear();  // Limpando a tela para garantir que não há texto residual
 
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
     int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
 
-    char ch;
-
+    char ch = '\0';
 
     screenGotoxy(offsetX, offsetY ); // Move o caracter para a posição calculada
     printf("* Bem-vindo ao MazeRun *");
@@ -27,14 +27,15 @@ void TelaInicio()
     screenGotoxy(offsetX, offsetY + 1); // Move o caracter para a posição calculada
     printf("* Pressione 'c' para começar *");
 
+    screenGotoxy(offsetX, offsetY + 2); // Move o caracter para a posição calculada
+    printf("* Para jogar, use as teclas A, W, S e D *");
 
     screenUpdate();  // Atualizando a tela para refletir as mudanças
 
-    while (ch!='c')
+    while (ch != 'c')
     {
         ch = readch();  // Esperando o jogador digitar 'c' para começar o game
     }
-
 }
 
 void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto na tela
@@ -50,11 +51,14 @@ void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto 
             char ch = labirinto[y][x];
             if (ch == '1') {
                 screenSetColor(WHITE, BLACK); // Paredes em branco
-            } else if (ch == 'E') {
+            } else if (ch == 'O') {
                 screenSetColor(GREEN, BLACK); // Jogador em verde
             } else if (ch == 'S') {
-                screenSetColor(RED, BLACK);   // Saída em vermelho
-            } else {
+                screenSetColor(BLUE, BLACK);   // Saída em vermelho
+            } 
+            else if (ch == 'K') {
+                screenSetColor(YELLOW, BLACK); // Chaves em amarelo
+            }else {
                 screenSetColor(WHITE, BLACK); // Caminhos em branco
             }
             printf("%c", ch); // Imprime o caractere
@@ -63,65 +67,108 @@ void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto 
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 }
 
-void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
-    if (labirinto[y][x] == ' ') { // se a posição desejada for ' ', ele avança
-        labirinto[personagem_y][personagem_x] = ' '; // Remove o personagem da posição antiga
-        personagem_x = x; // Atualiza as coordenadas do personagem
-        personagem_y = y; // Atualiza as coordenadas do personagem
-        labirinto[personagem_y][personagem_x] = 'E'; // Coloca o personagem na nova posição
-    }
+void chaves(char **labirinto) {
 
-    else if (labirinto[y][x] == '1') { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de voce perdeu
-        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
-    }
-
-    else if (labirinto[y][x] == 'S') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de voce ganhou
-        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
+    int chaves = 0;
+    while (chaves < 3) {
+        int x = rand() % COLUNA;
+        int y = rand() % LINHA;
+        if (labirinto[y][x] == ' ' && (x != personagem_x || y != personagem_y)) {
+            labirinto[y][x] = 'K';
+            chaves++;
+        }
     }
 }
 
+void MostrarMensagemMorte() {
+    screenClear(); // Limpa a tela antes de exibir a mensagem
+    int offsetX = (MAXX - 30) / 2; // Calcula a posição horizontal para centralizar a mensagem
+    int offsetY = (MAXY - 1) / 2; // Calcula a posição vertical para centralizar a mensagem
 
+    screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
+    screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
+    printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!");; // Exibe a mensagem
+    screenUpdate(); // Atualiza a tela para refletir as mudanças
 
+    getchar(); // Espera o usuário pressionar uma tecla para encerrar
+}
 
+void MostrarMensagemVitoria() {
+    screenClear();
+    int offsetX = (MAXX - 30) / 2; // Calcula a posição horizontal para centralizar a mensagem
+    int offsetY = (MAXY - 1) / 2; // Calcula a posição vertical para centralizar a mensagem
+
+    screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
+    screenSetColor(GREEN, BLACK); // Define a cor do texto para verde
+    printf("Parabéns! Você venceu!"); // Exibe a mensagem
+    screenUpdate(); // Atualiza a tela para refletir as mudanças
+
+    getchar(); // Espera o usuário pressionar uma tecla para encerrar
+}
+
+void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
+    if (labirinto[y][x] == ' ' || labirinto[y][x] == 'K') { // se a posição desejada for ' ' ou 'K', ele avança
+    if (labirinto[y][x] == 'K') {
+        chaves_cont++; // Incrementa o número de chaves coletadas
+    }
+    labirinto[personagem_y][personagem_x] = ' '; // Remove o personagem da posição antiga
+    personagem_x = x; // Atualiza as coordenadas do personagem
+    personagem_y = y; // Atualiza as coordenadas do personagem
+    labirinto[personagem_y][personagem_x] = 'O'; // Coloca o personagem na nova posição
+    }
+    else if (labirinto[y][x] == '1') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de você morreu
+        labirinto[personagem_y][personagem_x] = 'O'; // Coloca o personagem na posição da parede
+        DesenhaLabirinto(labirinto); // Atualiza o labirinto para mostrar o personagem na parede
+        *correr = 0; // Altera o valor principal, pois foi chamada em um ponteiro
+        MostrarMensagemMorte(); // Mostra a mensagem de morte
+    }
+
+    else if (labirinto[y][x] == 'S') {
+        if (chaves_cont == 3) { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de você ganhou
+        *correr = 0; // Altera o valor principal, pois foi chamada em um ponteiro
+        MostrarMensagemVitoria(); // Mostra a mensagem de vitória
+    }
+  }    
+}
 int main() {
     int i;
     int correr = 1;
     char **labirinto;
 
-
-    labirinto = (char **)calloc(LINHA, sizeof(char*)); // Alocando dinâmicamente a matriz do labirinto
+    labirinto = (char **)calloc(LINHA, sizeof(char*)); // Alocando dinamicamente a matriz do labirinto
     for (i = 0; i < LINHA; i++) {
         labirinto[i] = (char *)calloc(COLUNA + 1, sizeof(char));
     }
 
     char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
-        "1E111111111111111111",
-        "1  111111          1",
-        "11 11   11 1111 11 1",
-        "11    1    1     1 1",
-        "1111111111 1 11  1 1",
-        "1   1   11 1111    1",
-        "11  1 1 11  1   11 1",
-        "1     1 11111 1 1 11",
-        "1 11 11       1  1 1",
-        "1  1 11111111111   1",
-        "11 1 11   11    11 1",
-        "1  1 11 1    11  1 1",
-        "1  1    1111 111 111",
-        "11   1111    111 111",
-        "11 1     1111    111",
-        "1   111  1    111111",
-        "1 1   1 1  11 111111",
-        "1   1 1 1 1        1",
-        "111111111S1111111111"
+    "1O111111111111111111",
+    "1  111111     1    1",
+    "11 11   11 1111 11 1",
+    "11    1    1     1 1",
+    "1111111111 1 11  1 1",
+    "1   1   11 1111    1",
+    "11  1 1 11  1   11 1",
+    "1     1 11111 1 1 11",
+    "1 11 11       1  1 1",
+    "1  1 11111111111   1",
+    "11 1 11   11    11 1",
+    "1  1 11 1    11  1 1",
+    "1  1    1111 111 111",
+    "11   1111    111 111",
+    "11 1     1111    111",
+    "1   111  1    111111",
+    "1 1   1 1  11 111111",
+    "1   1 1 1 1  1     1",
+    "111111111S1111111111"
     };
 
     for (i = 0; i < LINHA; i++) { // Copia a matriz estática para a matriz dinâmica
         strcpy(labirinto[i], labirintoInicial[i]);
     }
 
+    srand(time(NULL)); // Inicializa o gerador de números aleatórios com a hora atual
+    chaves(labirinto); // Coloca as chaves em posições aleatórias
     keyboardInit(); // Inicializa o teclado
-
     screenInit(1); // Inicializa a tela e desenha as bordas
 
     TelaInicio(); // Mostra a tela de início
@@ -139,15 +186,14 @@ int main() {
             while (1)
             {
 
-                if (ch=='w')
+                if (ch == 'w')
                 {
-
                     MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr); // Modifica as coordenadas do personagem
                     break;
 
                 }
 
-                else if (ch=='s')
+                else if (ch == 's')
                 {
 
                     MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr); // Modifica as coordenadas do personagem
@@ -155,7 +201,7 @@ int main() {
 
                 }
 
-                else if (ch=='a')
+                else if (ch == 'a')
                 {
 
                     MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr); // Modifica as coordenadas do personagem
@@ -163,7 +209,7 @@ int main() {
 
                 }
 
-                else if (ch=='d')
+                else if (ch == 'd')
                 {
 
                     MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr); // Modifica as coordenadas do personagem
@@ -171,25 +217,19 @@ int main() {
 
                 }
 
-                else if (ch=='l')
+                else if (ch == 'l')
                 {
-
-                    correr=0;
+                    correr = 0;
                     break;
-
                 }
 
                 else
                     break;
-
             }
 
             DesenhaLabirinto(labirinto); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
         }
-
-
     }
-
 
     for (i = 0; i < LINHA; i++) { // Liberando memória alocada
         free(labirinto[i]);
