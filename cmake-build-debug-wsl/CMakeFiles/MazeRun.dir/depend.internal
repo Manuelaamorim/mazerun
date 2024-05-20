@@ -5,9 +5,7 @@ CMakeFiles/MazeRun.dir/src/keyboard.c.o
  ../include/keyboard.h
  /mnt/c/Users/mathe/CLionProjects/mazerun/src/keyboard.c
 CMakeFiles/MazeRun.dir/src/main.c.o
- ../include/keyboard.h
  ../include/screen.h
- ../include/timer.h
  /mnt/c/Users/mathe/CLionProjects/mazerun/src/main.c
 CMakeFiles/MazeRun.dir/src/screen.c.o
  ../include/screen.h
