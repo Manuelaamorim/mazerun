@@ -2,37 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 #include "screen.h"
+#include "keyboard.h"
 
-// Define o tamanho do labirinto
-#define COLUNA 20
-#define LINHA 19
+#define COLUNA 20 // Definir o tamanho do labirinto
+#define LINHA 19 // Definir o tamanho do labirinto
+
+int personagem_x = 1; // Posição inicial do personagem
+int personagem_y = 0; // Posição inicial do personagem
 
 // Função para desenhar o labirinto na tela
-void desenhaLabirinto(char **labirinto)
-{
+void DesenhaLabirinto(char **labirinto) {
     int offsetX = (MAXX - COLUNA) / 2;
     int offsetY = (MAXY - LINHA) / 2;
 
-    for (int y = 0; y < LINHA; y++)
-    {
+    for (int y = 0; y < LINHA; y++) {
         screenGotoxy(offsetX + 1, offsetY + y + 1); // Define a posição do cursor com o deslocamento calculado
-        for (int x = 0; x < COLUNA; x++)
-        {
+        for (int x = 0; x < COLUNA; x++) {
             char ch = labirinto[y][x];
-            if (ch == '1')
-            {
+            if (ch == '1') {
                 screenSetColor(WHITE, BLACK); // Paredes em branco
-            }
-            else if (ch == 'E')
-            {
+            } else if (ch == 'E') {
                 screenSetColor(GREEN, BLACK); // Jogador em verde
-            }
-            else if (ch == 'S')
-            {
+            } else if (ch == 'S') {
                 screenSetColor(RED, BLACK);   // Saída em vermelho
-            }
-            else
-            {
+            } else {
                 screenSetColor(WHITE, BLACK); // Caminhos em branco
             }
             printf("%c", ch); // Imprime o caractere
@@ -41,15 +34,31 @@ void desenhaLabirinto(char **labirinto)
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 }
 
-int main()
-{
+void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
+    if (labirinto[y][x] == ' ') { // se a posição desejada for ' ', ele avança
+        labirinto[personagem_y][personagem_x] = ' '; // Remove o personagem da posição antiga
+        personagem_x = x; // Atualiza as coordenadas do personagem
+        personagem_y = y; // Atualiza as coordenadas do personagem
+        labirinto[personagem_y][personagem_x] = 'E'; // Coloca o personagem na nova posição
+    }
+
+    else if (labirinto[y][x] == 'S') { // se a posição desejada for 'S', o jogo acaba
+        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
+    }
+
+    else if (labirinto[y][x] == '1') { // se a posição desejada for '1', o jogo acaba
+        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
+    }
+}
+
+int main() {
     int i;
+    int correr = 1;
     char **labirinto;
 
     // Alocação dinâmica da matriz labirinto
     labirinto = (char **)calloc(LINHA, sizeof(char*));
-    for (i = 0; i < LINHA; i++)
-    {
+    for (i = 0; i < LINHA; i++) {
         labirinto[i] = (char *)calloc(COLUNA + 1, sizeof(char));
     }
 
@@ -76,29 +85,80 @@ int main()
         "111111111S1111111111"
     };
 
-    for (i = 0; i < LINHA; i++) // Copia a matriz estática para a matriz dinámica
-    {
+    for (i = 0; i < LINHA; i++) { // Copia a matriz estática para a matriz dinâmica
         strcpy(labirinto[i], labirintoInicial[i]);
     }
 
-    // Inicializa a tela e desenha as bordas
-    screenInit(1);
+    keyboardInit(); // Inicializa o teclado
+    screenInit(1); // Inicializa a tela e desenha as bordas
+    DesenhaLabirinto(labirinto); // Desenha o labirinto na tela
 
-    // Desenha o labirinto na tela
-    desenhaLabirinto(labirinto);
+    while (correr) {
+        if (keyhit()) { // Verifica se alguma tecla foi pressionada
+            char ch = readch(); // Lê a tecla que foi pressionada
 
-    // Aguarda o usuário pressionar Enter para finalizar
-    getchar();
+            while (1)
+            {
 
-    // Libera a memória alocada
-    for (i = 0; i < LINHA; i++)
-    {
+                if (ch=='w')
+                {
+
+                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr);
+                    break;
+
+                }
+
+                else if (ch=='s')
+                {
+
+                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr);
+                    break;
+
+                }
+
+                else if (ch=='a')
+                {
+
+                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr);
+                    break;
+
+                }
+
+                else if (ch=='d')
+                {
+
+                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr);
+                    break;
+
+                }
+
+                else if (ch=='l')
+                {
+
+                    correr=0;
+                    break;
+
+                }
+
+                else
+                    break;
+
+            }
+
+            DesenhaLabirinto(labirinto); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
+        }
+
+
+    }
+
+    // Liberando memória alocada
+    for (i = 0; i < LINHA; i++) {
         free(labirinto[i]);
     }
     free(labirinto);
 
-    // Finaliza a tela
-    screenDestroy();
+    screenDestroy(); // Finaliza a tela
+    keyboardDestroy(); // Finaliza o teclado
 
     return 0;
 }

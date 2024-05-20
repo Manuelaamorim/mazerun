@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+../include/keyboard.h
+
 ../include/screen.h
 stdio.h
 -
@@ -19,4 +21,6 @@ string.h
 -
 screen.h
 /mnt/c/Users/mathe/CLionProjects/mazerun/src/screen.h
+keyboard.h
+/mnt/c/Users/mathe/CLionProjects/mazerun/src/keyboard.h
 
