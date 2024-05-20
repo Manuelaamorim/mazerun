@@ -72,7 +72,7 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
     }
 
     else if (labirinto[y][x] == '1') { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de voce perdeu
-        *correr=2; // Altera o valor principal, pois foi chamada em um ponteiro
+        *correr=0; // Altera o valor principal, pois foi chamada em um ponteiro
     }
 
     else if (labirinto[y][x] == 'S') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de voce ganhou
@@ -80,32 +80,8 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
     }
 }
 
-void TelaPerder()
-{
-
-    screenClear();  // Limpando a tela para garantir que não há texto residual
-
-    int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
-    int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
-
-    char ch;
 
 
-    screenGotoxy(offsetX, offsetY ); // Move o caracter para a posição calculada
-    printf("* Você perdeu! *");
-
-    screenGotoxy(offsetX, offsetY + 1); // Move o caracter para a posição calculada
-    printf("* Pressione 'r' para recomeçar *");
-
-
-    screenUpdate();  // Atualizando a tela para refletir as mudanças
-
-    while (ch!='r')
-    {
-        ch = readch();  // Esperando o jogador digitar 'c' para começar o game
-    }
-
-}
 
 int main() {
     int i;
@@ -214,18 +190,6 @@ int main() {
 
     }
 
-    if (correr==2)
-    {
-        char ch = readch(); // Lê a tecla que foi pressionada
-
-        if (ch=='r')
-        {
-            correr=0;
-        }
-
-        TelaPerder();
-
-    }
 
     for (i = 0; i < LINHA; i++) { // Liberando memória alocada
         free(labirinto[i]);
