@@ -56,14 +56,13 @@ int main() {
     int correr = 1;
     char **labirinto;
 
-    // Alocação dinâmica da matriz labirinto
-    labirinto = (char **)calloc(LINHA, sizeof(char*));
+
+    labirinto = (char **)calloc(LINHA, sizeof(char*)); // Alocando dinâmicamente a matriz do labirinto
     for (i = 0; i < LINHA; i++) {
         labirinto[i] = (char *)calloc(COLUNA + 1, sizeof(char));
     }
 
-    // Preenchendo o labirinto com o conteúdo desejado
-    char labirintoInicial[LINHA][COLUNA + 1] = {
+    char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
         "1E111111111111111111",
         "1  111111          1",
         "11 11   11 1111 11 1",
@@ -151,8 +150,7 @@ int main() {
 
     }
 
-    // Liberando memória alocada
-    for (i = 0; i < LINHA; i++) {
+    for (i = 0; i < LINHA; i++) { // Liberando memória alocada
         free(labirinto[i]);
     }
     free(labirinto);
