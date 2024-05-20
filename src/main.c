@@ -10,8 +10,8 @@
 int personagem_x = 1; // Posição inicial do personagem
 int personagem_y = 0; // Posição inicial do personagem
 
-// Função para desenhar o labirinto na tela
-void DesenhaLabirinto(char **labirinto) {
+
+void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto na tela
     int offsetX = (MAXX - COLUNA) / 2;
     int offsetY = (MAXY - LINHA) / 2;
 
