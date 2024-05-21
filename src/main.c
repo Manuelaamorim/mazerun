@@ -92,6 +92,7 @@ void MostrarMensagemMorte() {
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
     printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!");; // Exibe a mensagem
+    screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada
     printf("Aperte 'r' para recomeçar!");; // Exibe a mensagem
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -111,6 +112,8 @@ void MostrarMensagemVitoria() {
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     screenSetColor(GREEN, BLACK); // Define a cor do texto para verde
     printf("Parabéns! Você venceu!"); // Exibe a mensagem
+    screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada (funciona como um \n)
+    printf("Aperte 'r' para recomeçar!");; // Exibe a mensagem
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
     getchar(); // Espera o usuário pressionar uma tecla para encerrar
