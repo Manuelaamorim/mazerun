@@ -28,7 +28,7 @@ void TelaInicio()
     printf("* Pressione 'c' para começar *");
 
     screenGotoxy(offsetX, offsetY + 2); // Move o caracter para a posição calculada
-    printf("* Para jogar, use as teclas A, W, S e D *");
+    printf("* Para jogar, use as teclas 'a', 'w', 's' e 'd' *");
 
     screenUpdate();  // Atualizando a tela para refletir as mudanças
 
@@ -81,16 +81,26 @@ void chaves(char **labirinto) {
 }
 
 void MostrarMensagemMorte() {
+
     screenClear(); // Limpa a tela antes de exibir a mensagem
+
+    char ch='\0';
+
     int offsetX = (MAXX - 30) / 2; // Calcula a posição horizontal para centralizar a mensagem
     int offsetY = (MAXY - 1) / 2; // Calcula a posição vertical para centralizar a mensagem
 
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
     printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!");; // Exibe a mensagem
+    printf("Aperte 'r' para recomeçar!");; // Exibe a mensagem
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
-    getchar(); // Espera o usuário pressionar uma tecla para encerrar
+    while (ch != 'l')
+    {
+        ch = readch();  // Esperando o jogador digitar 'c' para sair do game
+
+    }
+
 }
 
 void MostrarMensagemVitoria() {
@@ -142,7 +152,7 @@ int main() {
 
     char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
     "1O111111111111111111",
-    "1  111111     1    1",
+    "1  111111          1",
     "11 11   11 1111 11 1",
     "11    1    1     1 1",
     "1111111111 1 11  1 1",
@@ -176,6 +186,7 @@ int main() {
     screenClear(); // Limpa a tela antes de desenhar o labirinto
 
     DesenhaLabirinto(labirinto); // Desenha o labirinto na tela
+
 
     while (correr) { // Criei um while true que pode virar false
         if (keyhit())
