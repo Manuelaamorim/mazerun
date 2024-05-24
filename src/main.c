@@ -26,11 +26,6 @@ void InicializaJogador(Jogador *jogador) {
     jogador->score = 0;   // Inicia o score com zero
 }
 
-void ColetaChave(Jogador *jogador) {
-    jogador->chaves++;  // Incrementa o contador de chaves
-    printf("Você coletou %d chave(s).\n", jogador->chaves);
-}
-
 void SalvaScore(Jogador jogador) {
     FILE *file = fopen("scores.txt", "a");  // Abre o arquivo em modo de append
     if (file == NULL) {
@@ -99,12 +94,15 @@ void DesenhaLabirinto(char **labirinto) { // Função para desenhar o labirinto 
 void chaves(char **labirinto) {
 
     int chaves = 0;
+    Jogador *jogador;
+    
     while (chaves < 3) {
         int x = rand() % COLUNA;
         int y = rand() % LINHA;
         if (labirinto[y][x] == ' ' && (x != personagem_x || y != personagem_y)) {
             labirinto[y][x] = 'K';
-            chaves++;
+            jogador->chaves++;
+            printf("Você coletou %d chave(s).\n", jogador->chaves);
         }
     }
 }
@@ -181,6 +179,7 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr) {
     }
 }    
 }
+
 int main() {
     int i; 
     int correr = 1;
