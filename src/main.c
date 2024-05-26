@@ -58,7 +58,7 @@ int main() {
         "11 1     1111      1",
         "1   111  1    1  1 1",
         "1 1   1 1  11 111  1",
-        "1   1 1 1 1  1     1",
+        "1   1 1 1T1  1     1",
         "111111111S1111111111"
     };
 
@@ -196,7 +196,10 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
                 screenSetColor(BLUE, BLACK);   // Saída em vermelho
             } else if (ch == 'K') {
                 screenSetColor(YELLOW, BLACK); // Chaves em amarelo
-            } else {
+            }else if (ch == 'T') {
+                screenSetColor(RED, BLACK); // Chaves em amarelo
+            }
+            else {
                 screenSetColor(WHITE, BLACK); // Caminhos em branco
             }
             printf("%c", ch); // Imprime o caractere
@@ -259,6 +262,9 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr)
         if (labirinto[y][x] == 'K') {
             chaves_cont++; // Incrementa o número de chaves coletadas
             ColetaChave(jgdr);
+        } if (chaves_cont==3)
+        {
+            labirinto[17][9]=' ';
         }
         labirinto[personagem_y][personagem_x] = ' '; // Remove o personagem da posição antiga
         personagem_x = x; // Atualiza as coordenadas do personagem
