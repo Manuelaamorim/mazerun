@@ -19,6 +19,8 @@ stdlib.h
 -
 string.h
 -
+time.h
+-
 screen.h
 /mnt/c/Users/mathe/CLionProjects/mazerun/src/screen.h
 keyboard.h
