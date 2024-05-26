@@ -16,14 +16,15 @@ typedef struct{
     char nome[100];  // Nome do jogador
     int chaves;      // Número de chaves coletadas
     double score;    // Score do jogador, medido em segundos
+    char saida[50]; // Conseguiu sair
 } jogador;
 
 void TelaInicio();
 void TelaPedirNome(jogador *jgdr);
 void DesenhaLabirinto(char **labirinto, jogador jgdr);
 void chaves(char **labirinto);
-void MostrarMensagemMorte();
-void MostrarMensagemVitoria();
+void MostrarMensagemMorte(jogador *jgdr);
+void MostrarMensagemVitoria(jogador *jgdr);
 void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr);
 void SalvaScore(jogador jgdr);
 void ColetaChave(jogador *jgdr);
@@ -172,6 +173,7 @@ void TelaPedirNome(jogador *jgdr) {
     jgdr->nome[strcspn(jgdr->nome, "\n")] = 0;  // Remove o \n
     jgdr->chaves = 0;  // Inicia com zero chaves
     jgdr->score = 0;   // Inicia o score com zero
+    strcpy(jgdr->saida, "");
 
     keyboardInit(); // Reinicializa captura de teclas após a entrada do nome
 
@@ -197,7 +199,7 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
             } else if (ch == 'K') {
                 screenSetColor(YELLOW, BLACK); // Chaves em amarelo
             }else if (ch == 'T') {
-                screenSetColor(RED, BLACK); // Chaves em amarelo
+                screenSetColor(RED, BLACK); // Cadeado em vermelho
             }
             else {
                 screenSetColor(WHITE, BLACK); // Caminhos em branco
@@ -206,7 +208,7 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
         }
     }
     screenGotoxy(offsetX + 25, offsetY + 1); // Move o caracter para a posição calculada
-    printf("Quantidade de chaves coletadas: %d", jgdr.chaves);
+    printf("Quantidade de chaves coletadas: %d", jgdr.chaves/3);
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 }
 
@@ -222,7 +224,7 @@ void chaves(char **labirinto) {
     }
 }
 
-void MostrarMensagemMorte() {
+void MostrarMensagemMorte(jogador *jgdr) {
     screenClear(); // Limpa a tela antes de exibir a mensagem
 
     char ch = '\0';
@@ -235,6 +237,7 @@ void MostrarMensagemMorte() {
     printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada
     printf("Aperte 'r' para recomeçar!"); // Exibe a mensagem
+    strcpy(jgdr->saida, "Não conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
     while (ch != 'l') {
@@ -242,7 +245,7 @@ void MostrarMensagemMorte() {
     }
 }
 
-void MostrarMensagemVitoria() {
+void MostrarMensagemVitoria(jogador *jgdr) {
     screenClear();
     int offsetX = (MAXX - 30) / 2; // Calcula a posição horizontal para centralizar a mensagem
     int offsetY = (MAXY - 1) / 2; // Calcula a posição vertical para centralizar a mensagem
@@ -252,6 +255,7 @@ void MostrarMensagemVitoria() {
     printf("Parabéns! Você venceu!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada (funciona como um \n)
     printf("Aperte 'r' para recomeçar!"); // Exibe a mensagem
+    strcpy(jgdr->saida, "Conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
     getchar(); // Espera o usuário pressionar uma tecla para encerrar
@@ -274,11 +278,11 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr)
         labirinto[personagem_y][personagem_x] = 'O'; // Coloca o personagem na posição da parede
         DesenhaLabirinto(labirinto, *jgdr); // Atualiza o labirinto para mostrar o personagem na parede
         *correr = 0; // Altera o valor principal, pois foi chamada em um ponteiro
-        MostrarMensagemMorte(); // Mostra a mensagem de morte
+        MostrarMensagemMorte(jgdr); // Mostra a mensagem de morte
     } else if (labirinto[y][x] == 'S') {
         if (chaves_cont == 3) { // se a posição desejada for 'S', o jogo acaba, aparecendo uma tela de você ganhou
             *correr = 0; // Altera o valor principal, pois foi chamada em um ponteiro
-            MostrarMensagemVitoria(); // Mostra a mensagem de vitória
+            MostrarMensagemVitoria(jgdr); // Mostra a mensagem de vitória
         }
     }
 }
@@ -289,7 +293,7 @@ void SalvaScore(jogador jgdr) {
         perror("Falha ao abrir o arquivo");
         return;
     }
-    fprintf(file, "Nome: %s, Chaves: %d, Tempo: %.2f segundos\n", jgdr.nome, jgdr.chaves, jgdr.score);
+    fprintf(file, "Nome: %s, Chaves: %d, Tempo: %.2f segundos, %s\n", jgdr.nome, jgdr.chaves, jgdr.score, jgdr.saida);
     fclose(file);
 }
 
