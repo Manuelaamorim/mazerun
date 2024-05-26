@@ -142,7 +142,7 @@ void TelaInicio() {
     printf("* Bem-vindo ao MazeRun *");
 
     screenGotoxy(offsetX, offsetY + 1); // Move o caracter para a posição calculada
-    printf("* Pressione 'c' para começar *");
+    printf("* Pressione 'c' para começar ou 'l' para sair! *");
 
     screenGotoxy(offsetX, offsetY + 2); // Move o caracter para a posição calculada
     printf("* Para jogar, use as teclas 'a', 'w', 's' e 'd' *");
@@ -208,7 +208,7 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
         }
     }
     screenGotoxy(offsetX + 25, offsetY + 1); // Move o caracter para a posição calculada
-    printf("Quantidade de chaves coletadas: %d", jgdr.chaves/3);
+    printf("Quantidade de chaves coletadas: %d/3", jgdr.chaves);
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 }
 
@@ -236,7 +236,7 @@ void MostrarMensagemMorte(jogador *jgdr) {
     screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
     printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada
-    printf("Aperte 'r' para recomeçar!"); // Exibe a mensagem
+    printf("Aperte 'l' para sair!"); // Exibe a mensagem
     strcpy(jgdr->saida, "Não conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -247,6 +247,8 @@ void MostrarMensagemMorte(jogador *jgdr) {
 
 void MostrarMensagemVitoria(jogador *jgdr) {
     screenClear();
+    char ch = '\0';
+
     int offsetX = (MAXX - 30) / 2; // Calcula a posição horizontal para centralizar a mensagem
     int offsetY = (MAXY - 1) / 2; // Calcula a posição vertical para centralizar a mensagem
 
@@ -254,11 +256,13 @@ void MostrarMensagemVitoria(jogador *jgdr) {
     screenSetColor(GREEN, BLACK); // Define a cor do texto para verde
     printf("Parabéns! Você venceu!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada (funciona como um \n)
-    printf("Aperte 'r' para recomeçar!"); // Exibe a mensagem
+    printf("Aperte 'l' para sair!"); // Exibe a mensagem
     strcpy(jgdr->saida, "Conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
-    getchar(); // Espera o usuário pressionar uma tecla para encerrar
+    while (ch != 'l') {
+        ch = readch();  // Esperando o jogador digitar 'l' para sair do game
+    }
 }
 
 void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr) {
