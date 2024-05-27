@@ -12,6 +12,8 @@
 stdio.h
 -
 
+../include/timer.h
+
 /mnt/c/Users/mathe/CLionProjects/mazerun/src/main.c
 stdio.h
 -
@@ -19,8 +21,10 @@ stdlib.h
 -
 string.h
 -
-time.h
+unistd.h
 -
+timer.h
+/mnt/c/Users/mathe/CLionProjects/mazerun/src/timer.h
 screen.h
 /mnt/c/Users/mathe/CLionProjects/mazerun/src/screen.h
 keyboard.h
