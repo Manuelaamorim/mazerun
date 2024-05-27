@@ -28,6 +28,30 @@ void MostrarMensagemVitoria(jogador *jgdr);
 void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr);
 void SalvaScore(jogador jgdr);
 void ColetaChave(jogador *jgdr);
+void ResetarJogo(jogador *jgdr, char **labirinto);
+void TelaReniciar( int *correr);
+
+char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
+    "1O111111111111111111",
+    "1  111111          1",
+    "11 11   11 1111 11 1",
+    "11    1    1     1 1",
+    "1111111111 1 11  1 1",
+    "1   1   11 1111    1",
+    "11  1 1 11  1   11 1",
+    "1     1 11111 1 1 11",
+    "1 11 11       1  1 1",
+    "1  1 11111111111   1",
+    "11 1 11   11    11 1",
+    "1  1 11 1    11  1 1",
+    "1  1    1111 111 111",
+    "11   1111    111 111",
+    "11 1     1111      1",
+    "1   111  1    1  1 1",
+    "1 1   1 1  11 111  1",
+    "1   1 1 1T1  1     1",
+    "111111111S1111111111"
+};
 
 int main() {
     int i;
@@ -41,79 +65,57 @@ int main() {
         labirinto[i] = (char *)calloc(COLUNA + 1, sizeof(char));
     }
 
-    char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
-        "1O111111111111111111",
-        "1  111111          1",
-        "11 11   11 1111 11 1",
-        "11    1    1     1 1",
-        "1111111111 1 11  1 1",
-        "1   1   11 1111    1",
-        "11  1 1 11  1   11 1",
-        "1     1 11111 1 1 11",
-        "1 11 11       1  1 1",
-        "1  1 11111111111   1",
-        "11 1 11   11    11 1",
-        "1  1 11 1    11  1 1",
-        "1  1    1111 111 111",
-        "11   1111    111 111",
-        "11 1     1111      1",
-        "1   111  1    1  1 1",
-        "1 1   1 1  11 111  1",
-        "1   1 1 1T1  1     1",
-        "111111111S1111111111"
-    };
-
-    for (i = 0; i < LINHA; i++) { // Copia a matriz estática para a matriz dinâmica
-        strcpy(labirinto[i], labirintoInicial[i]);
-    }
-
     srand(time(NULL)); // Inicializa o gerador de números aleatórios com a hora atual
-    chaves(labirinto); // Coloca as chaves em posições aleatórias
     keyboardInit(); // Inicializa o teclado
     screenInit(1); // Inicializa a tela e desenha as bordas
 
     TelaInicio(); // Mostra a tela de início
-
     TelaPedirNome(&jgdr); // Pede o nome do jogador
 
-    screenClear(); // Limpa a tela antes de desenhar o labirinto
+    while (1) {
+        ResetarJogo(&jgdr, labirinto); // Reinicia o jogo
 
-    DesenhaLabirinto(labirinto, jgdr); // Desenha o labirinto na tela
+        clock_t start = clock(); // Inicia a contagem do tempo
 
-    clock_t start = clock(); // Inicia a contagem do tempo
+        while (correr) { // Criei um while true que pode virar false
+            if (keyhit()) {
+                // Verifica se alguma tecla foi pressionada
+                char ch = readch(); // Lê a tecla que foi pressionada
 
-    while (correr) { // Criei um while true que pode virar false
-        if (keyhit()) {
-            // Verifica se alguma tecla foi pressionada
-            char ch = readch(); // Lê a tecla que foi pressionada
-
-            while (1) {
-                if (ch == 'w') {
-                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                    break;
-                } else if (ch == 's') {
-                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                    break;
-                } else if (ch == 'a') {
-                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                    break;
-                } else if (ch == 'd') {
-                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                    break;
-                } else if (ch == 'l') {
-                    correr = 0;
-                    break;
-                } else {
-                    break;
+                while (1) {
+                    if (ch == 'w') {
+                        MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                        break;
+                    } else if (ch == 's') {
+                        MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                        break;
+                    } else if (ch == 'a') {
+                        MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                        break;
+                    } else if (ch == 'd') {
+                        MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                        break;
+                    } else if (ch == 'l') {
+                        correr = 0;
+                        break;
+                    } else {
+                        break;
+                    }
                 }
-            }
 
-            DesenhaLabirinto(labirinto, jgdr); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
+                DesenhaLabirinto(labirinto, jgdr); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
+            }
+        }
+
+        clock_t end = clock(); // Termina a contagem do tempo
+        jgdr.score = (double)(end - start) / CLOCKS_PER_SEC; // Calcula o tempo decorrido
+
+        TelaReniciar(&correr);  // Passando a referência de correr para a função
+
+        if (correr == 0) {
+            break;  // Sai do loop principal se o jogador escolher não reiniciar
         }
     }
-
-    clock_t end = clock(); // Termina a contagem do tempo
-    jgdr.score = (double)(end - start) / CLOCKS_PER_SEC; // Calcula o tempo decorrido
 
     SalvaScore(jgdr);
 
@@ -236,7 +238,7 @@ void MostrarMensagemMorte(jogador *jgdr) {
     screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
     printf("Você morreu :( Tente novamente! Quem sabe você tem mais sorte da próxima vez!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada
-    printf("Aperte 'l' para sair!"); // Exibe a mensagem
+    printf("* Aperte 'l' para sair *"); // Exibe a mensagem
     strcpy(jgdr->saida, "Não conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -256,7 +258,7 @@ void MostrarMensagemVitoria(jogador *jgdr) {
     screenSetColor(GREEN, BLACK); // Define a cor do texto para verde
     printf("Parabéns! Você venceu!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada (funciona como um \n)
-    printf("Aperte 'l' para sair!"); // Exibe a mensagem
+    printf("* Aperte 'l' para sair *"); // Exibe a mensagem
     strcpy(jgdr->saida, "Conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -303,4 +305,50 @@ void SalvaScore(jogador jgdr) {
 
 void ColetaChave(jogador *jgdr) {
     jgdr->chaves++;  // Incrementa o contador de chaves
+}
+
+void ResetarJogo(jogador *jgdr, char **labirinto) {
+    personagem_x = 1; // Resetar a posição inicial do personagem
+    personagem_y = 0; // Resetar a posição inicial do personagem
+    chaves_cont = 0; // Resetar o número de chaves coletadas
+
+    // Resetar o labirinto
+    for (int i = 0; i < LINHA; i++) {
+        strcpy(labirinto[i], labirintoInicial[i]);
+    }
+
+    // Reposicionar as chaves
+    chaves(labirinto);
+
+    // Resetar o jogador
+    jgdr->chaves = 0;
+
+    // Redesenhar o labirinto
+    DesenhaLabirinto(labirinto, *jgdr);
+}
+
+
+void TelaReniciar(int *correr) {
+    screenClear();  // Limpando a tela para garantir que não há texto residual
+
+    int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+    int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
+
+    char ch;
+    screenGotoxy(offsetX, offsetY); // Move o caracter para a posição calculada
+    printf("Deseja reiniciar o jogo?");
+    screenGotoxy(offsetX+1, offsetY+1); // Move o caracter para a posição calculada
+    printf("* Pressione 's' para sim e 'n' para não *");
+    screenUpdate();  // Atualizando a tela para refletir as mudanças
+
+    while (1) {
+        ch = readch();
+        if (ch == 's') {
+            *correr = 1;
+            break;
+        } else if (ch == 'n') {
+            *correr = 0;
+            break;
+        }
+    }
 }
