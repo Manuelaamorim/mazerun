@@ -31,27 +31,28 @@ void SalvaScore(jogador jgdr);
 void ColetaChave(jogador *jgdr);
 void ResetarJogo(jogador *jgdr, char **labirinto);
 void TelaReniciar( int *correr);
+void DesenhaTempo();
 
 char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
-    "1O111111111111111111",
-    "1  111111          1",
-    "11 11   11 1111 11 1",
-    "11    1    1     1 1",
-    "1111111111 1 11  1 1",
-    "1   1   11 1111    1",
-    "11  1 1 11  1   11 1",
-    "1     1 11111 1 1 11",
-    "1 11 11       1  1 1",
-    "1  1 11111111111   1",
-    "11 1 11   11    11 1",
-    "1  1 11 1    11  1 1",
-    "1  1    1111 111 111",
-    "11   1111    111 111",
-    "11 1     1111      1",
-    "1   111  1    1  1 1",
-    "1 1   1 1  11 111  1",
-    "1   1 1 1T1  1     1",
-    "111111111S1111111111"
+    "-O------------------",
+    "|                  |",
+    "|   |   |- |  | -- |",
+    "||    -          _ |",
+    "||-    -   -  -  | |",
+    "|       |   |-|    |",
+    "| |   -      |  |- |",
+    "|     | | - |-|    |",
+    "| |-|         |  | |",
+    "|  | | |  -| |-|   |",
+    "| | -     |-|    |-|",
+    "|  | |   -     -|  |",
+    "|       |-|  -| |- |",
+    "|-    | |    |-  | |",
+    "|   |     -        |",
+    "|   |-|       -  | |",
+    "| |        |-| |-| |",
+    "|   | | |T|  |     |",
+    "---------S----------"
 };
 
 int main() {
@@ -95,7 +96,8 @@ int main() {
                     correr = 0;
                 }
 
-                DesenhaLabirinto(labirinto, jgdr); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
+                DesenhaLabirinto(labirinto, jgdr);
+                DesenhaTempo();  // Desenha novamente o labirinto na tela com a posição atualizada do personagem
             }
         }
 
@@ -184,7 +186,7 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
         screenGotoxy(offsetX + 1, offsetY + y + 1); // Move o caracter para a posição calculada
         for (int x = 0; x < COLUNA; x++) {
             char ch = labirinto[y][x];
-            if (ch == '1') {
+            if (ch == '-' || ch == '|') {
                 screenSetColor(WHITE, BLACK); // Paredes em branco
             } else if (ch == 'O') {
                 screenSetColor(GREEN, BLACK); // Jogador em verde
@@ -272,7 +274,7 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr)
         personagem_x = x; // Atualiza as coordenadas do personagem
         personagem_y = y; // Atualiza as coordenadas do personagem
         labirinto[personagem_y][personagem_x] = 'O'; // Coloca o personagem na nova posição
-    } else if (labirinto[y][x] == '1') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de você morreu
+    } else if (labirinto[y][x] == '|' || labirinto[y][x] == '-') { // se a posição desejada for '1', o jogo acaba, aparecendo uma tela de você morreu
         labirinto[personagem_y][personagem_x] = 'O'; // Coloca o personagem na posição da parede
         DesenhaLabirinto(labirinto, *jgdr); // Atualiza o labirinto para mostrar o personagem na parede
         *correr = 0; // Altera o valor principal, pois foi chamada em um ponteiro
@@ -344,3 +346,11 @@ void TelaReniciar(int *correr) {
         }
     }
 }
+
+void DesenhaTempo() {
+    int offsetX = 2; // Posição X para desenhar o tempo
+    int offsetY = 2; // Posição Y para desenhar o tempo
+    screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
+    printf("Tempo: %.2f s", getTimeDiff() / 10000.0); // Imprime o tempo decorrido em segundos
+    screenUpdate(); // Atualiza a tela para refletir as mudanças
+}   
