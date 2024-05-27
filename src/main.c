@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <unistd.h> // para a função sleep()
+#include "timer.h"
 #include "screen.h"
 #include "keyboard.h"
 
@@ -65,7 +66,6 @@ int main() {
         labirinto[i] = (char *)calloc(COLUNA + 1, sizeof(char));
     }
 
-    srand(time(NULL)); // Inicializa o gerador de números aleatórios com a hora atual
     keyboardInit(); // Inicializa o teclado
     screenInit(1); // Inicializa a tela e desenha as bordas
 
@@ -75,40 +75,34 @@ int main() {
     while (1) {
         ResetarJogo(&jgdr, labirinto); // Reinicia o jogo
 
-        clock_t start = clock(); // Inicia a contagem do tempo
+        // Inicializa o temporizador para medir o tempo do jogo
+        timerInit(1);
 
         while (correr) { // Criei um while true que pode virar false
             if (keyhit()) {
                 // Verifica se alguma tecla foi pressionada
                 char ch = readch(); // Lê a tecla que foi pressionada
 
-                while (1) {
-                    if (ch == 'w') {
-                        MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                        break;
-                    } else if (ch == 's') {
-                        MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                        break;
-                    } else if (ch == 'a') {
-                        MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                        break;
-                    } else if (ch == 'd') {
-                        MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                        break;
-                    } else if (ch == 'l') {
-                        correr = 0;
-                        break;
-                    } else {
-                        break;
-                    }
+                if (ch == 'w') {
+                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                } else if (ch == 's') {
+                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                } else if (ch == 'a') {
+                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                } else if (ch == 'd') {
+                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                } else if (ch == 'l') {
+                    correr = 0;
                 }
 
                 DesenhaLabirinto(labirinto, jgdr); // Desenha novamente o labirinto na tela com a posição atualizada do personagem
             }
         }
 
-        clock_t end = clock(); // Termina a contagem do tempo
-        jgdr.score = (double)(end - start) / CLOCKS_PER_SEC; // Calcula o tempo decorrido
+        // Calcula o tempo decorrido e salva no jogador
+        jgdr.score = getTimeDiff() / 1000.0; // Converte de milissegundos para segundos
+
+        SalvaScore(jgdr);
 
         TelaReniciar(&correr);  // Passando a referência de correr para a função
 
@@ -116,8 +110,6 @@ int main() {
             break;  // Sai do loop principal se o jogador escolher não reiniciar
         }
     }
-
-    SalvaScore(jgdr);
 
     for (i = 0; i < LINHA; i++) { // Liberando memória alocada
         free(labirinto[i]);
