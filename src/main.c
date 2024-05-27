@@ -10,7 +10,7 @@
 #define LINHA 19 // Definir o tamanho do labirinto
 
 int personagem_x = 1; // Posição inicial do personagem
-int personagem_y = 0; // Posição inicial do personagem
+int personagem_y = 1; // Posição inicial do personagem
 int chaves_cont = 0; // Número de chaves coletadas
 
 typedef struct {
@@ -34,8 +34,8 @@ void TelaReniciar(int *correr);
 void DesenhaTempo();
 
 char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
-    "#O##################",
-    "#..######..........#",
+    "####################",
+    "#O.######..........#",
     "##.##...##.####.##.#",
     "##....#....#.....#.#",
     "##########.#.##..###",
@@ -132,7 +132,7 @@ void TelaInicio() {
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
     int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
 
-    char ch;
+    char ch = '\0';
 
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     printf("* Bem-vindo ao MazeRun *");
@@ -187,7 +187,7 @@ void DesenhaLabirinto(char **labirinto, jogador jgdr) { // Função para desenha
         for (int x = 0; x < COLUNA; x++) {
             char ch = labirinto[y][x];
             if (ch == '#') {
-                screenSetColor(DARKGRAY, BLACK); // Paredes em branco
+                screenSetColor(DARKGRAY, BLACK); // Paredes em cinza escuro
             } else if (ch == 'O') {
                 screenSetColor(GREEN, BLACK); // Jogador em verde
             } else if (ch == 'S') {
@@ -302,7 +302,7 @@ void ColetaChave(jogador *jgdr) {
 
 void ResetarJogo(jogador *jgdr, char **labirinto) {
     personagem_x = 1; // Resetar a posição inicial do personagem
-    personagem_y = 0; // Resetar a posição inicial do personagem
+    personagem_y = 1; // Resetar a posição inicial do personagem
     chaves_cont = 0; // Resetar o número de chaves coletadas
 
     // Resetar o labirinto
@@ -326,7 +326,7 @@ void TelaReniciar(int *correr) {
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
     int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
 
-    char ch;
+    char ch = '\0';
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     printf("Deseja reiniciar o jogo?");
     screenGotoxy(offsetX + 1, offsetY + 1); // Move o cursor para a posição calculada
@@ -352,4 +352,3 @@ void DesenhaTempo() {
     printf("Tempo: %.2f s", getTimeDiff() / 1000.0); // Imprime o tempo decorrido em segundos
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 }
-
