@@ -6,55 +6,55 @@
  * Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
 */
 
-#ifndef __SCREEN_H__
-#define __SCREEN_H__
+#ifndef __SCREEN_H__ // Evita que o conteúdo do arquivo screen.h seja incluído mais de uma vez durante a compilação
+#define __SCREEN_H__ // Evita que o conteúdo do arquivo screen.h seja incluído mais de uma vez durante a compilação
 
 #include <stdio.h>
 
-// Terminal control sequences
-#define ESC            "\033"
-#define NORMALTEXT     "[0m"
-#define BOLDTEXT       "[1m"
-#define ITALICTEXT     "[3m"
-#define BLINKTEXT      "[5m"
-#define REVERSETEXT    "[7m"
-#define HOMECURSOR     "[f"
-#define SHOWCURSOR     "[?25h"
-#define HIDECURSOR     "[?25l"
-#define CLEARSCREEN    "[2J"
+// Enviam comandos ao terminal para controlar a aparência do texto e o cursor
 
-// BOX Drawing - Unix like terminals
-#define BOX_ENABLE     "(0"
-#define BOX_DISABLE    "(B"
-#define BOX_VLINE      0x78
-#define BOX_HLINE      0x71
-#define BOX_UPLEFT     0x6C
-#define BOX_UPRIGHT    0x6B
-#define BOX_DWNLEFT    0x6D
-#define BOX_DWNRIGHT   0x6A
-#define BOX_CROSS      0x6E
-#define BOX_TLEFT      0X74
-#define BOX_TRIGHT     0X75
-#define BOX_TUP        0X77
-#define BOX_TDOWN      0X76
+#define ESC            "\033" // Código de escape ANSI
+#define NORMALTEXT     "[0m" // Texto normal
+#define BOLDTEXT       "[1m" // Texto em negrito
+#define ITALICTEXT     "[3m" // Texto em itálico
+#define BLINKTEXT      "[5m" // Texto piscando
+#define REVERSETEXT    "[7m" // Texto reverso
+#define HOMECURSOR     "[f" // Move o cursor para a posição inicial
+#define SHOWCURSOR     "[?25h" // Mostra o cursor
+#define HIDECURSOR     "[?25l" // Esconde o cursor
+#define CLEARSCREEN    "[2J" // Limpa a tela
 
-#define BOX_DIAMOND    0x60
-#define BOX_BLOCK      0x61
-#define BOX_DOT        0x7E
+// Desenhar bordas e caixas no terminal
+#define BOX_ENABLE     "(0" // Habilita caracteres de desenho de caixa
+#define BOX_DISABLE    "(B" // Desabilita caracteres de desenho de caixa
+#define BOX_VLINE      0x78 // Linha vertical
+#define BOX_HLINE      0x71 // Linha horizontal
+#define BOX_UPLEFT     0x6C // Canto superior esquerdo
+#define BOX_UPRIGHT    0x6B // Canto superior direito
+#define BOX_DWNLEFT    0x6D // Canto inferior esquerdo
+#define BOX_DWNRIGHT   0x6A // Canto inferior direito
+#define BOX_CROSS      0x6E // Cruzamento
+#define BOX_TLEFT      0X74 // T à esquerda
+#define BOX_TRIGHT     0X75 // T à direita
+#define BOX_TUP        0X77 // T para cima
+#define BOX_TDOWN      0X76 // T para baixo
+#define BOX_DIAMOND    0x60  // Diamante
+#define BOX_BLOCK      0x61 // Bloco
+#define BOX_DOT        0x7E // Ponto
 
-// screen constants
-#define SCRSTARTX      3      // Initial and final screen positions for the game
-#define SCRENDX        75     // It means the area that can be drawn 
-#define SCRSTARTY      1
-#define SCRENDY        23
+// Definir os limites da área de desenho da tela para o jogo
+#define SCRSTARTX      3 // Posições horizontais iniciais e finais,
+#define SCRENDX        75 // Posições horizontais iniciais e finais,
+#define SCRSTARTY      1 // Posições verticais iniciais e finais
+#define SCRENDY        23 // Posições verticais iniciais e finais
 
-#define MINX           1      // min screen horizontal pos
-#define MINY           1      // min screen vertical pos
-#define MAXX           82     // max screen horizontal pos
-#define MAXY           27     // max screen vertical pos
+#define MINX           1      // Definem os limites mínimos e máximos da tela
+#define MINY           1      // Definem os limites mínimos e máximos da tela
+#define MAXX           82     // Definem os limites mínimos e máximos da tela
+#define MAXY           27     // Definem os limites mínimos e máximos da tela
 
 /**
- * Screen Colors type
+ * Define várias cores que podem ser usadas como cores de primeiro plano (texto) e fundo no terminal
 */
 typedef enum {BLACK, RED, GREEN, BROWN, BLUE, MAGENTA, CYAN, LIGHTGRAY,
         DARKGRAY, LIGHTRED, LIGHTGREEN, YELLOW, LIGHTBLUE, 
@@ -156,7 +156,7 @@ static inline void screenBoxDisable()
  * 
  * @param drawBorders if not zero, draw borders on screen.
 */
-void screenInit(int drawBorders);
+void screenInit(int drawBorders); // Se drawBorders for diferente de zero, desenha bordas ao redor da tela.
 
 /**
  * Clear the screen and restores to initial state.
