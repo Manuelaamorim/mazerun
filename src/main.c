@@ -19,7 +19,7 @@ void TelaInicio()
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
     int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
 
-    char ch = '\0';
+    char ch;
 
     screenGotoxy(offsetX, offsetY ); // Move o caracter para a posição calculada
     printf("* Bem-vindo ao MazeRun *");
