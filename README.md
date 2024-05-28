@@ -52,8 +52,8 @@ O jogo foi feito utilizando a biblioteca cli-lib. Segue as instruções de como 
 
 - É necessário ter o compilador GCC instalado para jogar.<br>
 - Acessar via linha de comando, basta em seu diretório raiz do projeto, digitar os seguintes comandos:<br>
- ## $ gcc ./src/*.c -I./include -o cli-lib-example (compilação)<br>
- ## .\cli-lib-example (execução)<br>
+  `$ gcc ./src/*.c -I./include -o cli-lib-example`
+  `./include -o cli-lib-example`
 ## 👩‍💻 Membros
 
 <ul>
