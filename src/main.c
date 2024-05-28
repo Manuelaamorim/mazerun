@@ -353,4 +353,4 @@ void DesenhaTempo() {
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     printf("Tempo: %.2f s", getTimeDiff() / 10000.0); // Imprime o tempo decorrido em segundos
     screenUpdate(); // Atualiza a tela para refletir as mudanças
-}   
+}
