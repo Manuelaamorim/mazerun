@@ -47,10 +47,10 @@ char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o co
     "#..#.###########...#",
     "##.#.##...##....##.#",
     "#..#.##.#....##..#.#",
-    "#..#....####.###.###",
-    "##..#####....###.###",
+    "#..#....####..##.###",
+    "##..#.##......##.###",
     "##.#......###......#",
-    "#...###..#....#..#.#",
+    "#...##...#....#..#.#",
     "#.#...#.#..##.###..#",
     "#...#.###T#........#",
     "#########S##########"
@@ -122,6 +122,7 @@ int main() {
     screenDestroy(); // Finaliza a tela
     keyboardDestroy(); // Finaliza o teclado
 
+
     return 0;
 } // Fim da main
 
@@ -144,7 +145,7 @@ void TelaInicio() {
     screenGotoxy(offsetX, offsetY + 2); // Move o cursor para a posição calculada
     printf("* Para jogar, use as teclas 'a', 'w', 's' e 'd' *");
 
-    MostrarMaiorScore();
+    MostrarMaiorScore(); // Mostra o maior score ao final do jogo
     screenUpdate();  // Atualizando a tela para refletir as mudanças
 
     while (ch != 'c') {
@@ -375,22 +376,14 @@ void MostrarMaiorScore() {
     fclose(file);
 
     if (melhorJogador.score != __DBL_MAX__) {
-        int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
-        int offsetY = (MAXY - 10) / 2;
-        screenGotoxy(offsetX, offsetY + 3); 
-        printf("******Melhor Score (Menor Tempo):******\n");
-        screenGotoxy(offsetX, offsetY + 4); 
+        printf("Melhor Score (Menor Tempo):\n");
         printf("Nome: %s\n", melhorJogador.nome);
-        screenGotoxy(offsetX, offsetY + 5); 
         printf("Chaves: %d\n", melhorJogador.chaves);
-        screenGotoxy(offsetX, offsetY + 6); 
         printf("Tempo: %.2f segundos\n", melhorJogador.score);
-        screenGotoxy(offsetX, offsetY + 7); 
         printf("Status: %s\n", melhorJogador.saida);
     } else {
-        int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
-        int offsetY = (MAXY - 10) / 2;
-        screenGotoxy(offsetX, offsetY + 3);
-        printf("Nenhum score encontrado.\n");
+        printf("Nenhum score válido encontrado.\n");
     }
+
+    screenUpdate();
 }
