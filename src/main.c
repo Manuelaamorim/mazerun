@@ -32,6 +32,7 @@ void ColetaChave(jogador *jgdr);
 void ResetarJogo(jogador *jgdr, char **labirinto);
 void TelaReniciar(int *correr);
 void DesenhaTempo();
+void MostrarMaiorScore();
 
 char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
     "####################",
@@ -143,6 +144,7 @@ void TelaInicio() {
     screenGotoxy(offsetX, offsetY + 2); // Move o cursor para a posição calculada
     printf("* Para jogar, use as teclas 'a', 'w', 's' e 'd' *");
 
+    MostrarMaiorScore();
     screenUpdate();  // Atualizando a tela para refletir as mudanças
 
     while (ch != 'c') {
@@ -351,4 +353,44 @@ void DesenhaTempo() {
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     printf("Tempo: %.2f s", getTimeDiff() / 1000.0); // Imprime o tempo decorrido em segundos
     screenUpdate(); // Atualiza a tela para refletir as mudanças
+}
+
+void MostrarMaiorScore() {
+    FILE *file = fopen("scores.txt", "r");
+    if (file == NULL) {
+        perror("Falha ao abrir o arquivo");
+        return;
+    }
+
+    jogador melhorJogador;
+    melhorJogador.score = __DBL_MAX__;  // Inicializa com o maior valor possível
+
+    jogador jgdr;
+    while (fscanf(file, "Nome: %[^,], Chaves: %d, Tempo: %lf segundos, %[^\n]\n",
+                  jgdr.nome, &jgdr.chaves, &jgdr.score, jgdr.saida) != EOF) {
+        if (strcmp(jgdr.saida, "Conseguiu sair") == 0 && jgdr.score < melhorJogador.score) {
+            melhorJogador = jgdr;
+        }
+    }
+    fclose(file);
+
+    if (melhorJogador.score != __DBL_MAX__) {
+        int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+        int offsetY = (MAXY - 10) / 2;
+        screenGotoxy(offsetX, offsetY + 3); 
+        printf("******Melhor Score (Menor Tempo):******\n");
+        screenGotoxy(offsetX, offsetY + 4); 
+        printf("Nome: %s\n", melhorJogador.nome);
+        screenGotoxy(offsetX, offsetY + 5); 
+        printf("Chaves: %d\n", melhorJogador.chaves);
+        screenGotoxy(offsetX, offsetY + 6); 
+        printf("Tempo: %.2f segundos\n", melhorJogador.score);
+        screenGotoxy(offsetX, offsetY + 7); 
+        printf("Status: %s\n", melhorJogador.saida);
+    } else {
+        int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+        int offsetY = (MAXY - 10) / 2;
+        screenGotoxy(offsetX, offsetY + 3);
+        printf("Nenhum score encontrado.\n");
+    }
 }
