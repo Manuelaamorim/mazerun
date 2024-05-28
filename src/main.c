@@ -20,7 +20,7 @@ typedef struct {
     char saida[50]; // Conseguiu sair
 } jogador;
 
-void TelaInicio();
+void TelaInicio(int *correr, int *dbreak);
 void TelaPedirNome(jogador *jgdr);
 void DesenhaLabirinto(char **labirinto, jogador jgdr);
 void chaves(char **labirinto);
@@ -30,8 +30,9 @@ void MoverPersonagem(int x, int y, char **labirinto, int *correr, jogador *jgdr)
 void SalvaScore(jogador jgdr);
 void ColetaChave(jogador *jgdr);
 void ResetarJogo(jogador *jgdr, char **labirinto);
-void TelaReniciar(int *correr);
+void TelaReniciar(int *correr, jogador jgdr);
 void DesenhaTempo();
+void MostrarMaiorScore();
 
 char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o conteúdo desejado
     "####################",
@@ -58,6 +59,7 @@ char labirintoInicial[LINHA][COLUNA + 1] = { // Preenchendo o labirinto com o co
 int main() {
     int i;
     int correr = 1;
+    int dbreak = 1;
     char **labirinto;
 
     jogador jgdr;
@@ -70,48 +72,58 @@ int main() {
     keyboardInit(); // Inicializa o teclado
     screenInit(1); // Inicializa a tela e desenha as bordas
 
-    TelaInicio(); // Mostra a tela de início
-    TelaPedirNome(&jgdr); // Pede o nome do jogador
+    while (1)
+    {
 
-    while (1) {
-        ResetarJogo(&jgdr, labirinto); // Reinicia o jogo
+        TelaInicio(&correr, &dbreak); // Mostra a tela de início
 
-        // Inicializa o temporizador para medir o tempo do jogo
-        timerInit(1);
+        if (dbreak == 0)
+            break;
 
-        while (correr) { // Criei um while true que pode virar false
-            if (keyhit()) {
-                // Verifica se alguma tecla foi pressionada
-                char ch = readch(); // Lê a tecla que foi pressionada
+        TelaPedirNome(&jgdr); // Pede o nome do jogador
 
-                if (ch == 'w') {
-                    MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                } else if (ch == 's') {
-                    MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                } else if (ch == 'a') {
-                    MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                } else if (ch == 'd') {
-                    MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
-                } else if (ch == 'l') {
-                    correr = 0;
+        while (1) {
+            ResetarJogo(&jgdr, labirinto); // Reinicia o jogo
+
+            // Inicializa o temporizador para medir o tempo do jogo
+            timerInit(1);
+
+            while (correr) { // Criei um while true que pode virar false
+                if (keyhit()) {
+                    // Verifica se alguma tecla foi pressionada
+                    char ch = readch(); // Lê a tecla que foi pressionada
+
+                    if (ch == 'w') {
+                        MoverPersonagem(personagem_x, personagem_y - 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                    } else if (ch == 's') {
+                        MoverPersonagem(personagem_x, personagem_y + 1, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                    } else if (ch == 'a') {
+                        MoverPersonagem(personagem_x - 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                    } else if (ch == 'd') {
+                        MoverPersonagem(personagem_x + 1, personagem_y, labirinto, &correr, &jgdr); // Modifica as coordenadas do personagem
+                    } else if (ch == 'l') {
+                        correr = 0;
+                        strcpy(jgdr.saida, "Desistiu");
+                    }
+
+                    DesenhaLabirinto(labirinto, jgdr);
+                    DesenhaTempo();  // Desenha novamente o labirinto na tela com a posição atualizada do personagem
                 }
+            }
 
-                DesenhaLabirinto(labirinto, jgdr);
-                DesenhaTempo();  // Desenha novamente o labirinto na tela com a posição atualizada do personagem
+            // Calcula o tempo decorrido e salva no jogador
+            jgdr.score = getTimeDiff() / 1000.0; // Converte de milissegundos para segundo
+
+            TelaReniciar(&correr, jgdr);  // Passando a referência de correr para a função
+
+            if (correr == 0) {
+                break;  // Sai do loop principal se o jogador escolher não reiniciar
             }
         }
-
-        // Calcula o tempo decorrido e salva no jogador
-        jgdr.score = getTimeDiff() / 1000.0; // Converte de milissegundos para segundos
-
         SalvaScore(jgdr);
 
-        TelaReniciar(&correr);  // Passando a referência de correr para a função
-
-        if (correr == 0) {
-            break;  // Sai do loop principal se o jogador escolher não reiniciar
-        }
     }
+
 
     for (i = 0; i < LINHA; i++) { // Liberando memória alocada
         free(labirinto[i]);
@@ -126,7 +138,7 @@ int main() {
 
 // Inicio das funções declaradas acima
 
-void TelaInicio() {
+void TelaInicio(int *correr, int *dbreak) {
     screenClear();  // Limpando a tela para garantir que não há texto residual
 
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
@@ -143,10 +155,20 @@ void TelaInicio() {
     screenGotoxy(offsetX, offsetY + 2); // Move o cursor para a posição calculada
     printf("* Para jogar, use as teclas 'a', 'w', 's' e 'd' *");
 
+    MostrarMaiorScore();
     screenUpdate();  // Atualizando a tela para refletir as mudanças
 
-    while (ch != 'c') {
-        ch = readch();  // Esperando o jogador digitar 'c' para começar o game
+
+    while (1) {
+        ch = readch();
+        if (ch == 'c') {
+            *correr = 1;
+            break;
+        } else if (ch == 'l') {
+            *correr = 0;
+            *dbreak=0;
+            break;
+        }
     }
 }
 
@@ -231,7 +253,7 @@ void MostrarMensagemMorte(jogador *jgdr) {
     screenSetColor(RED, BLACK); // Define a cor do texto para vermelho
     printf("Você morreu :( Tente novamente!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada
-    printf("* Aperte 'l' para sair *"); // Exibe a mensagem
+    printf("* Aperte 'l' para continuar *"); // Exibe a mensagem
     strcpy(jgdr->saida, "Não conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -251,7 +273,7 @@ void MostrarMensagemVitoria(jogador *jgdr) {
     screenSetColor(GREEN, BLACK); // Define a cor do texto para verde
     printf("Parabéns! Você venceu!"); // Exibe a mensagem
     screenGotoxy(offsetX, offsetY + 1); // Move o cursor para a posição calculada (funciona como um \n)
-    printf("* Aperte 'l' para sair *"); // Exibe a mensagem
+    printf("* Aperte 'l' para continuar *"); // Exibe a mensagem
     strcpy(jgdr->saida, "Conseguiu sair");
     screenUpdate(); // Atualiza a tela para refletir as mudanças
 
@@ -320,7 +342,7 @@ void ResetarJogo(jogador *jgdr, char **labirinto) {
     DesenhaLabirinto(labirinto, *jgdr);
 }
 
-void TelaReniciar(int *correr) {
+void TelaReniciar(int *correr, jogador jgdr) {
     screenClear();  // Limpando a tela para garantir que não há texto residual
 
     int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
@@ -328,7 +350,7 @@ void TelaReniciar(int *correr) {
 
     char ch = '\0';
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
-    printf("Deseja reiniciar o jogo?");
+    printf("Deseja reiniciar o jogo como %s?", jgdr.nome);
     screenGotoxy(offsetX + 1, offsetY + 1); // Move o cursor para a posição calculada
     printf("* Pressione 's' para sim e 'n' para não *");
     screenUpdate();  // Atualizando a tela para refletir as mudanças
@@ -351,4 +373,37 @@ void DesenhaTempo() {
     screenGotoxy(offsetX, offsetY); // Move o cursor para a posição calculada
     printf("Tempo: %.2f s", getTimeDiff() / 1000.0); // Imprime o tempo decorrido em segundos
     screenUpdate(); // Atualiza a tela para refletir as mudanças
+}
+
+void MostrarMaiorScore() {
+    int offsetX = (MAXX - 30) / 2; // Tentando centralizar a mensagem na tela
+    int offsetY = (MAXY - 10) / 2; // Tentando centralizar a mensagem na tela
+    FILE *file = fopen("scores.txt", "r");
+    if (file == NULL) {
+        perror("Falha ao abrir o arquivo");
+        return;
+    }
+    jogador melhorJogador;
+    melhorJogador.score = __DBL_MAX__;  // Inicializa com o maior valor possível
+    jogador jgdr;
+    while (fscanf(file, "Nome: %[^,], Chaves: %d, Tempo: %lf segundos, %[^\n]\n",
+                  jgdr.nome, &jgdr.chaves, &jgdr.score, jgdr.saida) != EOF) {
+        if (strcmp(jgdr.saida, "Conseguiu sair") == 0 && jgdr.score < melhorJogador.score) {
+            melhorJogador = jgdr;
+        }
+                  }
+    fclose(file);
+
+    screenGotoxy(offsetX, offsetY+ 6); // Move o cursor para a posição calculada
+    printf("Melhor Score (Menor Tempo):\n");
+
+    if (melhorJogador.score != __DBL_MAX__) {
+
+        screenGotoxy(offsetX, offsetY + 7); // Move o cursor para a posição calculada
+        printf("Nome: %s, Tempo: %.2f segundos ", melhorJogador.nome, melhorJogador.score);
+    } else {
+        screenGotoxy(offsetX, offsetY + 4); // Move o cursor para a posição calculada
+        printf("Nenhum score válido encontrado.");
+    }
+    screenUpdate();
 }
