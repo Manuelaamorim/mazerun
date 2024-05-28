@@ -42,7 +42,18 @@ Encontre a saída (representada pelo caractere 'S') para vencer o jogo.<br>
 **Morte:** Se tocar nas paredes, o jogo exibe uma mensagem de morte e permite reiniciar ou sair.<br>
 **Reiniciar Jogo:** Após uma vitória ou morte, você pode escolher reiniciar o jogo. <br>
 
+## Instruções <br>
+O jogo foi feito utilizando a biblioteca cli-lib. Segue as instruções de como utilizá-la:<br>
 
+
+**Jogo acessível em:**<br>
+- MacOS<br>
+- Linux (Ubuntu, etc)<br>
+
+- É necessário ter o compilador GCC instalado para jogar.<br>
+- Acessar via linha de comando, basta em seu diretório raiz do projeto, digitar os seguintes comandos:<br>
+ ## $ gcc ./src/*.c -I./include -o cli-lib-example (compilação)<br>
+ ## .\cli-lib-example (execução)<br>
 ## 👩‍💻 Membros
 
 <ul>
