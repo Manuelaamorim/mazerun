@@ -402,7 +402,7 @@ void MostrarMaiorScore() {
         screenGotoxy(offsetX, offsetY + 7); // Move o cursor para a posição calculada
         printf("Nome: %s, Tempo: %.2f segundos ", melhorJogador.nome, melhorJogador.score);
     } else {
-        screenGotoxy(offsetX, offsetY + 4); // Move o cursor para a posição calculada
+        screenGotoxy(offsetX, offsetY + 7); // Move o cursor para a posição calculada
         printf("Nenhum score válido encontrado.");
     }
     screenUpdate();
