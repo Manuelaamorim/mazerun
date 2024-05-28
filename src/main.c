@@ -378,9 +378,7 @@ void MostrarMaiorScore() {
     if (melhorJogador.score != __DBL_MAX__) {
         printf("Melhor Score (Menor Tempo):\n");
         printf("Nome: %s\n", melhorJogador.nome);
-        printf("Chaves: %d\n", melhorJogador.chaves);
         printf("Tempo: %.2f segundos\n", melhorJogador.score);
-        printf("Status: %s\n", melhorJogador.saida);
     } else {
         printf("Nenhum score válido encontrado.\n");
     }
