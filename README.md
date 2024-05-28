@@ -19,6 +19,28 @@
 
 ## 🕹️ Como Jogar
 
+***Controles*** <br>
+**w**: Move o personagem para cima.<br>
+**s**: Move o personagem para baixo.<br>
+**a**: Move o personagem para a esquerda. <br>
+**d**: Move o personagem para a direita.<br>
+**l**: Sair do jogo.<br>
+
+
+***Objetivo*** <br>
+Colete três chaves (representadas pelo caractere 'K') espalhadas pelo labirinto.<br>
+Encontre a saída (representada pelo caractere 'S') para vencer o jogo.<br>
+
+
+***Regras do Jogo*** <br>
+**Início:** O jogo começa mostrando uma tela de boas-vindas. Pressione 'c' para começar.<br>
+**Nome do Jogador:** Insira o nome do jogador quando solicitado.<br>
+**Movimentação:** Use as teclas de controle para mover o personagem pelo labirinto.<br>
+**Coleta de Chaves:** Coletar todas as três chaves desbloqueará a saída. <br>
+**Evitar Paredes:** Se tocar nas paredes (representadas pelos caracteres '-' ou '|'), o jogo termina.<br>
+**Vitória:** Após coletar as três chaves, mova-se até a saída para vencer o jogo. <br>
+**Morte:** Se tocar nas paredes, o jogo exibe uma mensagem de morte e permite reiniciar ou sair.<br>
+**Reiniciar Jogo:** Após uma vitória ou morte, você pode escolher reiniciar o jogo. <br>
 
 
 ## 👩‍💻 Membros
