@@ -1,11 +1,3 @@
-<p align="center">
-  <img
-    src="https://img.shields.io/badge/Status-Em%20desenvolvimento-green?style=flat-square"
-    alt="Status"
-  />
-</p>
-
-
 ## 🖥️ Mazerun
 
 
